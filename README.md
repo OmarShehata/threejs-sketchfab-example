@@ -8,7 +8,7 @@ It shows how to authenticate & fetch the model, and how to correctly load a glTF
 
 This repo does not contain any live Sketchfab credentials. You can see a version of this in my [WebGL outlines tutorial](https://github.com/OmarShehata/webgl-outlines#live-demo). First, click "Login with Sketchfab", then paste in any Sketchfab URL to load it into the scene.
 
-![](media/loading-example.gif)
+![](media/load-example.gif)
 
 ### How to use
 
