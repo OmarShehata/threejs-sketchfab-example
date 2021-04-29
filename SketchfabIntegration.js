@@ -111,7 +111,34 @@ class SketchfabIntegration {
 		// This call will fail if model can't be downloaded
 		const response = await fetch(metadataUrl, options);
 		const metadata = await response.json();
-		return metadata.gltf.url;
+
+		// Get license information to display attribution 
+		const attribution = await this.getAttributionText(modelID);
+
+		return { url: metadata.gltf.url, attribution: attribution };
+	}
+
+	async getAttributionText(modelID) {
+		const modelDataUrl = `https://api.sketchfab.com/v3/models/${modelID}`;
+		const options = {
+		    method: 'GET',
+		    headers: {
+		        Authorization: `Bearer ${this.token}`,
+		    },
+		    mode: 'cors'
+		};
+		const response = await fetch(modelDataUrl, options);
+		const metadata = await response.json();
+
+		const license = { name: metadata.license.label, url: metadata.license.url };
+		const user = { name: metadata.user.displayName , url: metadata.user.profileUrl };
+		const model = { name: metadata.name, url: metadata.viewerUrl };
+		const attributionText = 
+		`This work is based on <a href="${model.url}" target=_blank>${model.name}</a>
+		by <a href="${user.url}" target=_blank>${user.name}</a> 
+		licensed under <a href="${license.url}" target=_blank>${license.name}</a>.`;
+
+		return attributionText;
 	}
 
 	// This assumes there is an HTML element with the id "overlay"
@@ -124,8 +151,11 @@ class SketchfabIntegration {
 		}
 
 		let modelZipUrl;
+		let attributionText;
 		try {
-			modelZipUrl = await this.getModelDownloadUrl(url);
+			const result = await this.getModelDownloadUrl(url);
+			modelZipUrl = result.url;
+			attributionText = result.attribution;
 		} catch (e) {
 			// Update modal with error
 			console.error("Failed to download model from Sketchfab", e);
@@ -149,6 +179,10 @@ class SketchfabIntegration {
 
 		// Dismiss modal 
 		this._resetSketchfabUI();
+		// Display attribution
+		console.log(attributionText);
+		console.log(document.querySelector("#attribution-container"));
+		document.querySelector("#attribution-container").innerHTML = attributionText;
 	}
 
 	_resetSketchfabUI() {
@@ -158,6 +192,7 @@ class SketchfabIntegration {
 		document.querySelector('#dimiss-btn').style.display = 'none';
 		document.querySelector('#unknown-error').style.display = 'none';
 		document.querySelector('#fetch-success').style.display = 'none';
+		document.querySelector("#attribution-container").innerHTML = "";
 	}
 }
 
