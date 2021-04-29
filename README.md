@@ -19,6 +19,8 @@ This repo does not contain any live Sketchfab credentials. You can see a version
 
 You can now go to [localhost:1234](http://localhost:1234) and login with your Sketchfab account. It will redirect you to your redirect URI, but for local testing you can copy the URI and manually open localhost with the access token params.
 
+See [a full guide explaining how this code works](https://dev.to/omar4ur/how-to-load-sketchfab-models-directly-in-a-threejs-app-5anb).
+
 ### Code snippet for loading a ZIP file
 
 If you're here just to see an example for how to load a ZIP file in ThreeJS, see this function here:
